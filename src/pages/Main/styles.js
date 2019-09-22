@@ -11,6 +11,10 @@ export const Form = styled.form`
     padding: 10px 15px;
     border-radius: 4px;
     font-size: 16px;
+
+    &.error {
+      border: 1px solid #e74c3c;
+    }
   }
 `;
 
@@ -27,7 +31,11 @@ export const SubmitButton = styled.button.attrs(props => ({
   type: 'submit',
   disabled: props.loading === 'true',
 }))`
-  background: #7159c1;
+  background: #14ffec;
+  transition: all 0.4s;
+  &:hover {
+    background: #0d7377;
+  }
   border: 0;
   padding: 0 15px;
   margin-left: 10px;
@@ -66,7 +74,7 @@ export const List = styled.ul`
     }
 
     a {
-      color: #7159c1;
+      color: #0d7377;
       text-decoration: none;
     }
   }

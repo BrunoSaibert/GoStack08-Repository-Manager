@@ -13,6 +13,7 @@ export default class Main extends Component {
     newRepo: '',
     repositories: [],
     loading: false,
+    error: false,
   };
 
   componentDidMount() {
@@ -37,25 +38,33 @@ export default class Main extends Component {
   handleSubmit = async e => {
     e.preventDefault();
 
-    this.setState({ loading: true });
+    try {
+      this.setState({ loading: true });
 
-    const { newRepo, repositories } = this.state;
+      const { newRepo, repositories } = this.state;
 
-    const response = await api.get(`/repos/${newRepo}`);
+      if (repositories.indexOf(newRepo)) {
+        throw new Error('Repositório duplicado');
+      }
 
-    const data = {
-      name: response.data.full_name,
-    };
+      const response = await api.get(`/repos/${newRepo}`);
 
-    this.setState({
-      repositories: [...repositories, data],
-      newRepo: '',
-      loading: false,
-    });
+      const data = {
+        name: response.data.full_name,
+      };
+
+      this.setState({
+        repositories: [...repositories, data],
+        newRepo: '',
+        loading: false,
+      });
+    } catch (error) {
+      this.setState({ error: true, loading: false });
+    }
   };
 
   render() {
-    const { newRepo, repositories, loading } = this.state;
+    const { newRepo, repositories, loading, error } = this.state;
 
     return (
       <Container>
@@ -69,6 +78,7 @@ export default class Main extends Component {
             placeholder="Adicionar repositório"
             value={newRepo}
             onChange={this.handleInputChange}
+            className={error && 'error'}
           />
 
           <SubmitButton loading={loading.toString()}>
