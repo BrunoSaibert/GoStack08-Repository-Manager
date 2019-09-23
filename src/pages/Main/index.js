@@ -38,12 +38,14 @@ export default class Main extends Component {
   handleSubmit = async e => {
     e.preventDefault();
 
-    try {
-      this.setState({ loading: true });
+    this.setState({ loading: true, error: false });
 
+    try {
       const { newRepo, repositories } = this.state;
 
-      if (repositories.indexOf(newRepo)) {
+      const hasRepo = repositories.find(r => r.name === newRepo);
+
+      if (hasRepo) {
         throw new Error('Repositório duplicado');
       }
 
@@ -56,10 +58,11 @@ export default class Main extends Component {
       this.setState({
         repositories: [...repositories, data],
         newRepo: '',
-        loading: false,
       });
     } catch (error) {
-      this.setState({ error: true, loading: false });
+      this.setState({ error: true });
+    } finally {
+      this.setState({ loading: false });
     }
   };
 
